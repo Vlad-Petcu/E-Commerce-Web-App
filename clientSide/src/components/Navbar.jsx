@@ -1,12 +1,11 @@
 import { Badge } from "@material-ui/core";
-import { Search, ShoppingCartOutlined } from "@material-ui/icons";
-import React from "react";
+import { ShoppingCartOutlined } from "@material-ui/icons";
 import styled from "styled-components";
 import { mobile } from "../responsive";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { logout } from "../redux/apiCalls";
+// import { useDispatch } from "react-redux";
+// import { logout } from "../redux/apiCalls";
 
 
 
@@ -29,25 +28,6 @@ const Left = styled.div`
   align-items: center;
 `;
 
-const Language = styled.span`
-  font-size: 14px;
-  cursor: pointer;
-  ${mobile({ display: "none" })}
-`;
-
-const SearchContainer = styled.div`
-  border: 0.5px solid lightgray;
-  display: flex;
-  align-items: center;
-  margin-left: 25px;
-  padding: 5px;
-`;
-
-const Input = styled.input`
-  border: none;
-  ${mobile({ width: "50px" })}
-`;
-
 const Center = styled.div`
   flex: 1;
   text-align: center;
@@ -55,6 +35,7 @@ const Center = styled.div`
 
 const Logo = styled.h1`
   font-weight: bold;
+  margin-bottom: 5px;
   ${mobile({ fontSize: "24px" })}
 `;
 const Right = styled.div`
@@ -72,48 +53,60 @@ const MenuItem = styled.div`
   ${mobile({ fontSize: "12px", marginLeft: "10px" })}
 `;
 
-const Navbar = () => {
-  const quantity = useSelector(state=>state.cart.quantity);
-  const user = useSelector((state) => state.user.currentUser);
-  const dispatch = useDispatch();
+const StyledLink = styled(Link)`
+  color: Black;
+  font-size: 20px;
+  font-weight: 600;
+  text-decoration: underline;
+`;
 
-  const handleClick = (e) => {
-    e.preventDefault();
-    logout(dispatch);
-  }
+const StyledLinkLogo = styled(Link)`
+  color: Black;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-decoration: none;
+`;
+
+const Navbar = () => {
+  const quantity = useSelector(state=>state.cart.totalCartQuantity);
+  // const user = useSelector((state) => state.user.currentUser);
+  // const dispatch = useDispatch();
+
+  // const handleClick = (e) => {
+  //   e.preventDefault();
+  //   logout(dispatch);
+  // }
 
   return (
     <Container>
       <Wrapper>
         <Left>
-          <Language>EN</Language>
-          <SearchContainer>
-            <Input placeholder="Search" />
-            <Search style={{ color: "gray", fontSize: 16 }} />
-          </SearchContainer>
         </Left>
         <Center>
-          <Logo>HANOVER</Logo>
+          <StyledLinkLogo to = "/">
+            <Logo>HANOVER</Logo>
+          </StyledLinkLogo>
         </Center>
         <Right>
-          <MenuItem>
-            <Link to = "/register">
+          {/* <MenuItem>
+            <StyledLink to = "/register">
               REGISTER
-            </Link>
+            </StyledLink>
           </MenuItem>
           <MenuItem onClick={handleClick}>
             {
               user
-              ?<Link to = "/login">LOGOUT</Link>
-              :<Link to = "/login">LOGIN</Link>
+              ?<StyledLink to = "/">LOGOUT</StyledLink>
+              :<StyledLink to = "/login">LOGIN</StyledLink>
             }
-          </MenuItem>
+          </MenuItem> */}
           <MenuItem>
-            <Link to = "/cart">
+            <StyledLink to = "/cart">
             <Badge badgeContent={quantity} color="primary">
               <ShoppingCartOutlined />
             </Badge>
-            </Link>
+            </StyledLink>
           </MenuItem>
         </Right>
       </Wrapper>

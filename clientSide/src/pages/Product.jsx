@@ -6,7 +6,7 @@ import { mobile } from "../responsive";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { publicRequest } from "../requestMethods";
-import { addProduct } from "../redux/cartRedux";
+import { addToCart } from "../redux/cartRedux";
 import { useDispatch } from "react-redux";
 
 const Container = styled.div``;
@@ -65,15 +65,6 @@ const FilterTitle = styled.span`
   font-weight: 200;
 `;
 
-const FilterColor = styled.div`
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background-color: ${(props) => props.color};
-  margin: 0px 5px;
-  cursor: pointer;
-`;
-
 const FilterSize = styled.select`
   margin-left: 10px;
   padding: 5px;
@@ -122,7 +113,6 @@ const Product = () => {
   const id = location.pathname.split("/")[2];
   const [product, setProduct] = useState({});
   const [quantity, setQuantity] = useState(1);
-  const [color, setColor] = useState("");
   const [size, setSize] = useState("");
   const dispatch = useDispatch();
 
@@ -146,9 +136,10 @@ const Product = () => {
 
   const handleClick = () => {
     dispatch(
-      addProduct({ ...product, quantity, color, size })
+      addToCart({ ...product, quantity, size })
     );
   };
+
   return (
     <Container>
       <Navbar />
@@ -162,14 +153,9 @@ const Product = () => {
           <Price>$ {product.price}</Price>
           <FilterContainer>
             <Filter>
-              <FilterTitle>Color</FilterTitle>
-              {product.color?.map((c) => (
-                <FilterColor color={c} key={c} onClick={() => setColor(c)} />
-              ))}
-            </Filter>
-            <Filter>
               <FilterTitle>Size</FilterTitle>
               <FilterSize onChange={(e) => setSize(e.target.value)}>
+              <FilterSizeOption disabled selected hidden key={"none"}>{"none"}</FilterSizeOption>
                 {product.size?.map((s) => (
                   <FilterSizeOption key={s}>{s}</FilterSizeOption>
                 ))}

@@ -1,10 +1,15 @@
-import { Add, Remove } from "@material-ui/icons";
-import styled from "styled-components";
-import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
-import { mobile } from "../responsive";
-// import { useEffect, useState } from "react";
+import Footer from "../components/Footer";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { 
+  removeFromCart, 
+  incriseProductQuantity, 
+  decriseProductQuantity 
+} from "../redux/cartRedux";
+import styled from "styled-components";
+import { Add, Remove } from "@material-ui/icons";
+import { mobile } from "../responsive";
 
 const Container = styled.div``;
 
@@ -101,7 +106,7 @@ const Summary = styled.div`
   border: 0.5px solid lightgray;
   border-radius: 10px;
   padding: 20px;
-  height: 50vh;
+  height: 50%;
 `;
 
 const SummaryTitle = styled.h1`
@@ -120,18 +125,53 @@ const SummaryItemText = styled.span``;
 
 const SummaryItemPrice = styled.span``;
 
+const RemoveButton = styled.button`
+  padding: 5px;
+  border: 2px solid teal;
+  background-color: white;
+  cursor: pointer;
+  font-weight: 500;
+  &:hover {
+    background-color: #f8f4f4;
+  }
+  height: 20%;
+  width: 30%;
+  font-size: 8px;
+`;
+
 const Button = styled.button`
-  width: 100%;
-  padding: 10px;
-  background-color: black;
-  color: white;
-  font-weight: 600;
+  padding: 15px;
+  border: 2px solid teal;
+  background-color: white;
+  cursor: pointer;
+  font-weight: 500;
+  &:hover {
+    background-color: #f8f4f4;
+  }
 `;
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
-  const user = useSelector((state) => state.user.currentUser);
-  let cartWithShipping = cart.total + 15;
+  const dispatch = useDispatch();
+
+  const handleRemoveFromCart = (product) => {
+    dispatch(
+      removeFromCart(product)
+    );
+  };
+
+  const handleIncriseProductQuantity = (product) => {
+    dispatch(
+      incriseProductQuantity(product)
+    );
+  };
+
+  const handleDecriseProductQuantity = (product) => {
+    dispatch(
+      decriseProductQuantity(product)
+    );
+  };
+
   return (
     <Container>
       <Navbar />
@@ -140,7 +180,7 @@ const Cart = () => {
         <Bottom>
           <Info>
             {cart.products.map(product => ( 
-              <Product>
+              <Product key={product.id}>
                 <ProductDetail>
                   <Image src = {product.img} />
                   <Details>
@@ -154,13 +194,14 @@ const Cart = () => {
                     <ProductSize>
                       <b>Size:</b> {product.size}
                     </ProductSize>
+                    <RemoveButton onClick={() => handleRemoveFromCart(product)}>REMOVE FROM CART</RemoveButton>
                   </Details>
                 </ProductDetail>
                 <PriceDetail>
                   <ProductAmountContainer>
-                    <Add />
+                    <Add onClick={() => handleIncriseProductQuantity(product)} />
                     <ProductAmount>{product.quantity}</ProductAmount>
-                    <Remove />
+                    <Remove onClick={() => handleDecriseProductQuantity(product)} />
                   </ProductAmountContainer>
                   <ProductPrice>
                     $ {product.price * product.quantity}
@@ -175,7 +216,7 @@ const Cart = () => {
             <SummaryTitle>ORDER SUMMARY</SummaryTitle>
             <SummaryItem>
               <SummaryItemText>Subtotal</SummaryItemText>
-              <SummaryItemPrice>$ {cartWithShipping}
+              <SummaryItemPrice>$ {cart.total}
               </SummaryItemPrice>
             </SummaryItem>
             <SummaryItem>
@@ -184,7 +225,7 @@ const Cart = () => {
             </SummaryItem>
             <SummaryItem type="total">
               <SummaryItemText>Total</SummaryItemText>
-              <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
+              <SummaryItemPrice>$ {cart.total + 15}</SummaryItemPrice>
             </SummaryItem>
             <Button>CHECKOUT NOW</Button>
           </Summary>
